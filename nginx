@@ -1,0 +1,13 @@
+server {
+    listen 80;
+    server_name todos;
+
+    location /static/ {
+        root /home/deploy/todo_app;
+    }
+
+    location / {
+        include         uwsgi_params;
+        uwsgi_pass      unix:/home/deploy/todo_app.sock;
+    }
+}
