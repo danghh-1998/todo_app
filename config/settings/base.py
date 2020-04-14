@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     'safedelete',
 
     'users',
-    'auth_tokens'
+    'auth_tokens',
+    'todos'
 ]
 
 MIDDLEWARE = [
