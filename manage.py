@@ -2,7 +2,7 @@
 import os
 import sys
 
-from config.environment import SETTINGS_MODULE
+from environment import SETTINGS_MODULE
 
 
 def main():
