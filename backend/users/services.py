@@ -28,6 +28,7 @@ def update_user(user, data):
     user.name = data.get('name') or user.name
     user.tel = data.get('tel') or user.tel
     user.save(update_fields=['name', 'tel'])
+    return user
 
 
 def deactivate_user(user):
@@ -35,6 +36,7 @@ def deactivate_user(user):
     user.is_active = False
     user.save(update_fields=['is_active'])
     user.delete()
+    return user
 
 
 def activate_user(user):
@@ -45,6 +47,7 @@ def activate_user(user):
         raise APIException('Token expired')
     user.is_active = True
     user.save(update_fields=['is_active'])
+    return user
 
 
 def change_password(user, data):
@@ -54,6 +57,7 @@ def change_password(user, data):
     user.set_password(data.get('new_password'))
     user.change_init_password = True
     user.save(update_fields=['password', 'change_init_password'])
+    return user
 
 
 def authenticate_user(email, password):
@@ -62,7 +66,7 @@ def authenticate_user(email, password):
         raise AuthenticationFailed
     expire_token(user=user)
     auth_token = create_token(user=user)
-    return auth_token.key
+    return auth_token
 
 
 def get_user_by(**kwargs):

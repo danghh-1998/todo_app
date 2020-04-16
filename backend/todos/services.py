@@ -27,3 +27,4 @@ def update_todo(todo, data):
 
 def delete_todo(todo):
     todo.delete()
+    return todo

@@ -18,11 +18,21 @@ class SignInApi(APIView):
         email = serializers.EmailField(required=True, max_length=255)
         password = serializers.CharField(required=True, max_length=255)
 
+    class OutputSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = ('id', 'email', 'name', 'tel', 'created_at')
+
     def post(self, request):
-        serializer = self.InputSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        token = authenticate_user(**serializer.validated_data)
-        return Response({'token': token}, status=status.HTTP_200_OK)
+        input_serializer = self.InputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        auth_token = authenticate_user(**input_serializer.validated_data)
+        user = auth_token.user
+        output_serializer = self.OutputSerializer(user)
+        return Response({
+            'user': output_serializer.data,
+            'token': auth_token.key
+        }, status=status.HTTP_200_OK)
 
 
 class SignUpApi(APIView):
@@ -35,12 +45,20 @@ class SignUpApi(APIView):
         password_confirmation = serializers.CharField(required=True, max_length=255)
         tel = serializers.CharField(required=True, max_length=255)
 
+    class OutputSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = ('id', 'email', 'name', 'tel', 'created_at')
+
     def post(self, request):
-        serializer = self.InputSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = create_user(data=serializer.validated_data)
+        input_serializer = self.InputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        user = create_user(data=input_serializer.validated_data)
         send_verify_email(user=user)
-        return Response(status=status.HTTP_200_OK)
+        output_serializer = self.OutputSerializer(user)
+        return Response({
+            'user': output_serializer.data
+        }, status=status.HTTP_200_OK)
 
 
 class UserVerifyEmailApi(APIView):
@@ -50,9 +68,9 @@ class UserVerifyEmailApi(APIView):
         email_token = serializers.CharField(required=True, max_length=255)
 
     def put(self, request):
-        serializer = self.InputSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = get_user_by(email_token=serializer.validated_data.get('email_token'))
+        input_serializer = self.InputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        user = get_user_by(email_token=input_serializer.validated_data.get('email_token'))
         activate_user(user=user)
         return Response(status=status.HTTP_200_OK)
 
@@ -68,8 +86,8 @@ class UserDetailApi(APIView):
     def get(self, request, user_id):
         user = get_user_by(id=user_id)
         self.check_object_permissions(request, obj=user)
-        serializer = self.OutputSerializer(user)
-        return Response({'user': serializer.data})
+        output_serializer = self.OutputSerializer(user)
+        return Response({'user': output_serializer.data})
 
 
 class UserUpdateApi(APIView):
@@ -79,23 +97,39 @@ class UserUpdateApi(APIView):
         name = serializers.CharField(max_length=255)
         tel = serializers.CharField(max_length=255)
 
+    class OutputSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = ('id', 'email', 'name', 'tel', 'created_at')
+
     def put(self, request, user_id):
-        serializer = self.InputSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        input_serializer = self.InputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
         user = get_user_by(id=user_id)
         self.check_object_permissions(request=request, obj=user)
-        update_user(data=serializer.validated_data, user=user)
-        return Response(status=status.HTTP_200_OK)
+        user = update_user(data=input_serializer.validated_data, user=user)
+        output_serializer = self.OutputSerializer(user)
+        return Response({
+            'user': output_serializer.data
+        }, status=status.HTTP_200_OK)
 
 
 class UserDeactivateApi(APIView):
     permission_classes = [UserPermission, ]
 
+    class OutputSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = User
+            fields = ('id', 'email', 'name', 'tel', 'created_at')
+
     def delete(self, request, user_id):
         user = get_user_by(id=user_id)
         self.check_object_permissions(request=request, obj=user)
         deactivate_user(user)
-        return Response(status=status.HTTP_200_OK)
+        output_serializer = self.OutputSerializer(user)
+        return Response({
+            'user': output_serializer.data
+        }, status=status.HTTP_200_OK)
 
 
 class UserChangePasswordApi(APIView):
@@ -107,11 +141,11 @@ class UserChangePasswordApi(APIView):
         password_confirmation = serializers.CharField(required=True, max_length=255)
 
     def put(self, request, user_id):
-        serializer = self.InputSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        input_serializer = self.InputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
         user = get_user_by(id=user_id)
         self.check_object_permissions(request=request, obj=user)
-        change_password(user=user, data=serializer.validated_data)
+        change_password(user=user, data=input_serializer.validated_data)
         return Response(status=status.HTTP_200_OK)
 
 
