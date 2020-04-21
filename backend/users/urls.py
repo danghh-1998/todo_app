@@ -9,6 +9,4 @@ urlpatterns = [
     path('users/<int:user_id>/update', UserUpdateApi.as_view(), name='user_update'),
     path('users/<int:user_id>/deactivate', UserDeactivateApi.as_view(), name='user_deactivate'),
     path('users/<int:user_id>/change_password', UserChangePasswordApi.as_view(), name='user_change_password'),
-
-    path('users/<int:user_id>/todos', UserListTodoApi.as_view(), name='user_list_todo')
 ]
