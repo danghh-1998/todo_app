@@ -15,7 +15,7 @@
         },
         methods: {
             handleNewTodo: function () {
-                this.$store.dispatch('createNewTodo', this.newTodo);
+                this.$store.dispatch('todos/createNewTodo', this.newTodo);
                 this.newTodo = ''
             }
         }

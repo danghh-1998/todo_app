@@ -17,7 +17,7 @@
         },
         computed: {
             todos: function () {
-                return this.$store.getters.filteredTodos
+                return this.$store.getters['todos/filteredTodos']
             }
         }
     }

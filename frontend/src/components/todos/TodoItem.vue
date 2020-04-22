@@ -18,10 +18,10 @@
         },
         methods: {
             updateTodo: function(){
-                this.$store.dispatch('updateTodo', this.$props.todo)
+                this.$store.dispatch('todos/updateTodo', this.$props.todo)
             },
             deleteTodo: function () {
-                this.$store.dispatch('deleteTodo', this.$props.todo)
+                this.$store.dispatch('todos/deleteTodo', this.$props.todo)
             }
         }
     }

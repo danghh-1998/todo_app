@@ -4,5 +4,6 @@ import mutations from "@/store/modules/todos/mutations";
 import state from "@/store/modules/todos/state";
 
 export default {
+    namespaced: true,
     state, getters, mutations, actions
 }
