@@ -18,13 +18,13 @@
         components: {PageHeader, TodoBody, TodoFooter, TodoHeader},
         data: function () {
             return {
-                todos: this.$store.getters.filteredTodoList
+                todos: this.$store.getters['todos/filteredTodoList']
             };
         },
         methods: {},
         computed: {},
         created: function () {
-            this.$store.dispatch('listTodos')
+            this.$store.dispatch('todos/listTodos')
         }
     }
 </script>

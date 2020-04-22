@@ -27,24 +27,24 @@
         props: {},
         methods: {
             filterAll: function () {
-                this.$store.dispatch('filterAll')
+                this.$store.dispatch('todos/filterAll')
             },
             filterActive: function () {
-                this.$store.dispatch('filterActive')
+                this.$store.dispatch('todos/filterActive')
             },
             filterComplete: function () {
-                this.$store.dispatch('filterComplete')
+                this.$store.dispatch('todos/filterComplete')
             },
             deleteCompleted: function () {
-                this.$store.dispatch('deleteCompleted')
+                this.$store.dispatch('todos/deleteCompleted')
             }
         },
         computed: {
             currentFilter: function () {
-                return this.$store.getters.filter
+                return this.$store.getters['todos/filter']
             },
             itemLeftText: function () {
-                let itemLeft = this.$store.getters.itemLeft;
+                let itemLeft = this.$store.getters['todos/itemLeft'];
                 if (itemLeft === 1) {
                     return [itemLeft, 'item left'].join(' ')
                 } else {
