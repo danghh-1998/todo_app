@@ -87,3 +87,23 @@ class TodoDeleteApi(APIView):
         return Response({
             'todo': output_serializer.data
         }, status=status.HTTP_200_OK)
+
+
+class TodoDeleteCompletedApi(APIView):
+    permission_classes = [UserPermission, ]
+
+    class OutputSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Todo
+            fields = ['id', 'content', 'is_complete', 'created_at', 'updated_at']
+
+    def delete(self, request):
+        compelted_todos = get_completed_todos()
+        self.check_object_permissions(request=request, obj=compelted_todos)
+        delete_completed_todos(todos=compelted_todos)
+        user = get_user_by(id=request.user.id)
+        todos = list(user.todos.all())
+        serializer = self.OutputSerializer(todos, many=True)
+        return Response({
+            'todos': serializer.data
+        }, status=status.HTTP_200_OK)
