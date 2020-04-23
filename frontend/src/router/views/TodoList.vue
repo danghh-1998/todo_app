@@ -23,13 +23,13 @@
         },
         methods: {},
         computed: {},
-        created: function () {
-            this.$store.dispatch('todos/listTodos')
+        mounted: function () {
+            this.$store.dispatch('todos/listTodos');
         }
     }
 </script>
 
 <style scoped>
-    .todo-list{
+    .todo-list {
     }
 </style>
